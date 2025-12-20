@@ -18,11 +18,3 @@ api_keys.properties
 # Configs
 gradle.properties
 google-services.json
-
-# Domain Repository
-app/src/main/kotlin/com/example/shestore/domain/repository/
-app/src/main/kotlin/com/example/shestore/domain/usecase/
-app/src/main/kotlin/com/example/shestore/domain/model/
-
-# UI
-app/src/main/kotlin/com/example/shestore/ui/
