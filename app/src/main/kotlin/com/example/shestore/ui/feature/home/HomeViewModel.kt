@@ -26,8 +26,13 @@ class HomeViewModel @Inject constructor(
     fun onEvent(event: HomeEvent) {
         when (event) {
             HomeEvent.Refresh -> loadFeaturedProducts()
+
             is HomeEvent.OnProductClick -> {
-                // TODO: handle navigation to product details
+                // TODO: handle navigation to product details using event.productId
+            }
+
+            HomeEvent.OnSeeAllNewArrivals -> {
+                // TODO: navigate to "All New Arrivals" screen or show full list
             }
         }
     }
