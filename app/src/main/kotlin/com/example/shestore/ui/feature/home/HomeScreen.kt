@@ -129,7 +129,7 @@ private fun HomeTopBar(
     }
 }
 
-/* ------------ BOTTOM BAR ------------- */
+/* ------------ BOTTOM BAR -------------*/
 
 private val ShopYellow = Color(0xFFF6A623)
 private val BottomBarGray = Color(0xFFB5B5B5)
@@ -353,7 +353,7 @@ private fun PromoCard() {
             .background(Color.White)
     ) {
         Image(
-            painter = painterResource(id = R.drawable.ic_nav_shop),
+            painter = painterResource(id = R.drawable.img_promo_placeholder),
             contentDescription = "Promo",
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop
@@ -410,7 +410,7 @@ private fun ProductCard(
             contentAlignment = Alignment.Center
         ) {
             Image(
-                painter = painterResource(id = R.drawable.ic_nav_shop),
+                painter = painterResource(id = R.drawable.img_product_placeholder),
                 contentDescription = product.name,
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop
