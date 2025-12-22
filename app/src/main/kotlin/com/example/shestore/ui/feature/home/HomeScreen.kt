@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.shestore.R
 import com.example.shestore.ui.theme.SheStoreTheme
+import com.example.shestore.ui.theme.blue
 
 @Composable
 fun HomeScreen(
@@ -79,151 +80,153 @@ private fun HomeTopBar(
     onSearchClick: () -> Unit,
     onProfileClick: () -> Unit
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 20.dp, vertical = 10.dp),
-        verticalAlignment = Alignment.CenterVertically
+    // Color you want for the whole top area (status bar + app bar)
+    val topBarColor = Color(0xFFF4F4F4)   // same grey you use for screen bg
+
+    Surface(
+        color = topBarColor
     ) {
-        IconButton(onClick = onMenuClick) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_menu),
-                contentDescription = "Menu",
-                tint = Color.Black
-            )
-        }
-
-        Spacer(modifier = Modifier.weight(1f))
-
-        IconButton(onClick = onSearchClick) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_search),
-                contentDescription = "Search",
-                tint = Color.Black
-            )
-        }
-
-        Box(
+        Row(
             modifier = Modifier
-                .padding(start = 4.dp)
-                .size(32.dp)
-                .clip(CircleShape)
-                .clickable { onProfileClick() },
-            contentAlignment = Alignment.Center
+                .fillMaxWidth()
+                .statusBarsPadding()               // <- leaves space for status bar
+                .padding(horizontal = 20.dp, vertical = 10.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.ic_profile_placeholder),
-                contentDescription = "Profile",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.matchParentSize()
-            )
+            // Menu icon
+            IconButton(onClick = onMenuClick) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_menu),
+                    contentDescription = "Menu",
+                    tint = Color.Black
+                )
+            }
 
+            Spacer(modifier = Modifier.weight(1f))
+
+            // Search icon
+            IconButton(onClick = onSearchClick) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_search),
+                    contentDescription = "Search",
+                    tint = Color.Black
+                )
+            }
+
+            // Avatar
             Box(
                 modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .size(8.dp)
+                    .padding(start = 4.dp)
+                    .size(32.dp)
                     .clip(CircleShape)
-                    .background(Color(0xFFFF3B30))
-            )
+                    .clickable { onProfileClick() },
+                contentAlignment = Alignment.Center
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_profile_placeholder),
+                    contentDescription = "Profile",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.matchParentSize()
+                )
+
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .size(8.dp)
+                        .clip(CircleShape)
+                        .background(Color(0xFFFF3B30))
+                )
+            }
         }
     }
 }
 
+
 /* ------------ BOTTOM BAR -------------*/
 
-private val ShopYellow = Color(0xFFF6A623)
-private val BottomBarGray = Color(0xFFB5B5B5)
+private val BottomIconGray = Color(0xFFBDBDBD)
 
+private data class BottomNavItemData(
+    val label: String,
+    val iconRes: Int
+)
+//good now i want to display name of icon on nav bar with animation from left to right
 @Composable
 private fun HomeBottomBar(
     selectedIndex: Int,
     onItemSelected: (Int) -> Unit
 ) {
-    NavigationBar(
-        containerColor = Color.White,
-        tonalElevation = 8.dp
+    val items = listOf(
+        BottomNavItemData("Shop",        R.drawable.ic_nav_shop),
+        BottomNavItemData("Categories",  R.drawable.ic_nav_categories),
+        BottomNavItemData("Bag",         R.drawable.ic_nav_cart),
+        BottomNavItemData("Saved",       R.drawable.ic_nav_bookmark),
+        BottomNavItemData("Profile",     R.drawable.ic_nav_profile)
+    )
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color(0xFFF4F4F4))
+            .navigationBarsPadding()
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        contentAlignment = Alignment.Center
     ) {
-        NavigationBarItem(
-            selected = selectedIndex == 0,
-            onClick = { onItemSelected(0) },
-            icon = {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_nav_shop),
-                    contentDescription = "Shop"
-                )
-            },
-            label = {
-                Text(
-                    text = "Shop",
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 12.sp
-                )
-            },
-            colors = NavigationBarItemDefaults.colors(
-                selectedIconColor = ShopYellow,
-                selectedTextColor = ShopYellow,
-                unselectedIconColor = BottomBarGray,
-                unselectedTextColor = BottomBarGray,
-                indicatorColor = Color.Transparent
-            )
+        Surface(
+            color = Color.White,
+            shape = RoundedCornerShape(40.dp),
+            shadowElevation = 10.dp
+        ) {
+            Row(
+                modifier = Modifier
+                    .padding(horizontal = 24.dp, vertical = 10.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                items.forEachIndexed { index, item ->
+                    PillBottomNavItem(
+                        iconRes = item.iconRes,
+                        label = item.label,
+                        selected = index == selectedIndex,
+                        onClick = { onItemSelected(index) }
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun PillBottomNavItem(
+    iconRes: Int,
+    label: String,
+    selected: Boolean,
+    onClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .clickable(onClick = onClick)
+            .padding(horizontal = 8.dp, vertical = 4.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            painter = painterResource(id = iconRes),
+            contentDescription = label,
+            tint = if (selected) blue else BottomIconGray,
+            modifier = Modifier.size(22.dp)
         )
 
-        NavigationBarItem(
-            selected = selectedIndex == 1,
-            onClick = { onItemSelected(1) },
-            icon = {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_nav_categories),
-                    contentDescription = "Categories"
-                )
-            },
-            label = { Text("Categories", fontSize = 12.sp) },
-            colors = NavigationBarItemDefaults.colors(
-                selectedIconColor = ShopYellow,
-                selectedTextColor = ShopYellow,
-                unselectedIconColor = BottomBarGray,
-                unselectedTextColor = BottomBarGray,
-                indicatorColor = Color.Transparent
+        if (selected) {
+            Spacer(modifier = Modifier.width(6.dp))
+            Text(
+                text = label,
+                color = blue,
+                fontSize = 13.sp,
+                fontWeight = FontWeight.SemiBold,
+                maxLines = 1,
+                softWrap = false
             )
-        )
-
-        NavigationBarItem(
-            selected = selectedIndex == 2,
-            onClick = { onItemSelected(2) },
-            icon = {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_nav_cart),
-                    contentDescription = "Cart"
-                )
-            },
-            label = { Text("Cart", fontSize = 12.sp) },
-            colors = NavigationBarItemDefaults.colors(
-                selectedIconColor = ShopYellow,
-                selectedTextColor = ShopYellow,
-                unselectedIconColor = BottomBarGray,
-                unselectedTextColor = BottomBarGray,
-                indicatorColor = Color.Transparent
-            )
-        )
-
-        NavigationBarItem(
-            selected = selectedIndex == 3,
-            onClick = { onItemSelected(3) },
-            icon = {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_nav_profile),
-                    contentDescription = "Profile"
-                )
-            },
-            label = { Text("Profile", fontSize = 12.sp) },
-            colors = NavigationBarItemDefaults.colors(
-                selectedIconColor = ShopYellow,
-                selectedTextColor = ShopYellow,
-                unselectedIconColor = BottomBarGray,
-                unselectedTextColor = BottomBarGray,
-                indicatorColor = Color.Transparent
-            )
-        )
+        }
     }
 }
 
@@ -271,7 +274,7 @@ private fun HomeContent(
                 ) {
                     Text(
                         text = label,
-                        color = if (selectedCategory == index) ShopYellow else Color(0xFFBDBDBD),
+                        color = if (selectedCategory == index) blue else Color(0xFFBDBDBD),
                         fontWeight = if (selectedCategory == index) FontWeight.SemiBold else FontWeight.Normal,
                         fontSize = 16.sp
                     )
@@ -281,7 +284,7 @@ private fun HomeContent(
                             modifier = Modifier
                                 .height(2.dp)
                                 .width(32.dp)
-                                .background(ShopYellow)
+                                .background(blue)
                         )
                     }
                 }
@@ -318,7 +321,7 @@ private fun HomeContent(
             Text(
                 text = "See All",
                 style = MaterialTheme.typography.bodyMedium,
-                color = ShopYellow,
+                color = blue,
                 modifier = Modifier.clickable { onSeeAllClick() }
             )
         }
