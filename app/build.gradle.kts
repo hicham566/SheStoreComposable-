@@ -65,6 +65,7 @@ android {
 
 dependencies {
     implementation(platform("androidx.compose:compose-bom:2025.12.00"))
+    implementation("androidx.compose.ui:ui:1.10.0")
     androidTestImplementation(platform("androidx.compose:compose-bom:2025.12.00"))
 
     // Core Android
@@ -106,4 +107,6 @@ dependencies {
     implementation("com.google.android.material:material:1.11.0")
 
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.7")
+
+    implementation("com.canopas.compose-animated-navigationbar:bottombar:1.0.1")
 }

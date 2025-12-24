@@ -27,6 +27,21 @@ import com.example.shestore.R
 import com.example.shestore.ui.theme.SheStoreTheme
 import com.example.shestore.ui.theme.blue
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.graphics.vector.ImageVector
+import com.example.bottombar.AnimatedBottomBar
+import com.example.bottombar.components.BottomBarItem
+import com.example.bottombar.model.IndicatorStyle
+
+import com.example.shestore.ui.theme.blue
+
 @Composable
 fun HomeScreen(
     state: HomeUiState,
@@ -90,7 +105,7 @@ private fun HomeTopBar(
             modifier = Modifier
                 .fillMaxWidth()
                 .statusBarsPadding()               // <- leaves space for status bar
-                .padding(horizontal = 20.dp, vertical = 10.dp),
+                .padding(horizontal = 7.dp, vertical = 10.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             // Menu icon
@@ -140,7 +155,51 @@ private fun HomeTopBar(
         }
     }
 }
+@Composable
+fun SheAnimatedBottomBar(
+    items: List<BottomNavItem>,
+    currentRoute: String,
+    onItemSelected: (BottomNavItem) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val selectedIndex = remember(currentRoute) {
+        items.indexOfFirst { it.route == currentRoute }.takeIf { it >= 0 } ?: 0
+    }
 
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 12.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        AnimatedBottomBar(
+            selectedItem = selectedIndex,
+            itemSize = items.size,
+            containerColor = Color.White,
+            contentColor = blue,          // icon + label color
+            indicatorColor = blue,        // pill color
+            indicatorStyle = IndicatorStyle.FILLED,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(72.dp)
+                .clip(RoundedCornerShape(36.dp))
+        ) {
+            items.forEachIndexed { index, item ->
+                BottomBarItem(
+                    selected = index == selectedIndex,
+                    onClick = {
+                        if (currentRoute != item.route) {
+                            onItemSelected(item)
+                        }
+                    },
+                    imageVector = ImageVector.vectorResource(id = item.iconRes),
+                    label = item.label,
+                    containerColor = Color.Transparent
+                )
+            }
+        }
+    }
+}
 
 /* ------------ BOTTOM BAR -------------*/
 
